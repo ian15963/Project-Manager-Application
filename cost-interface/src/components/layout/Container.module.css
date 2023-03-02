@@ -1,0 +1,33 @@
+.container{
+    display: flex;
+    width: 95vw;
+    justify-content: space-between;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+
+.min-height{
+    min-height: 75%;
+}
+
+.start, .start_service{
+    justify-content: flex-start;
+}
+
+.column{
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+@media (max-width: 768px){
+
+    .start{
+        margin-left: 30px;
+    }
+    .column{
+        margin-left: 15px;
+    }
+
+}
