@@ -24,7 +24,7 @@ function ProjectForm({btn_project, handleSubmit, projectData}){
     const submit = (e) => {
         e.preventDefault()
         console.log(project)
-        handleSubmit(project)
+        handleSubmit(project, "Projeto Atualizado com sucesso", "sucess")
     }
 
     function handleChange(e){

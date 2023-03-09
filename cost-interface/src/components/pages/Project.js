@@ -7,6 +7,7 @@ import ProjectForm from '../project/ProjectForm';
 import ServiceForm from "../service/ServiceForm";
 import ServiceCard from "../service/ServiceCard";
 import Message from "../layout/Message";
+import Api from "../axios/config"
 
 function Project(){
 
@@ -21,18 +22,15 @@ function Project(){
 
 
     useEffect(() => {
-        fetch(`http://localhost:8080/projects/${id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(resp => resp.json())
-        .then((data) =>{
-            setProject(data)
-            setServices(data.service)
+
+        Api.get(`projects/${id}`)
+        .then((response) => {
+            setProject(response.data)
+            setServices(response.data.service)
         })
-        .catch(err => console.log(err))
-    }, [id])
+
+        
+    }, [id, project.service])
 
     function toogleProjectForm(){
         setShowProjectForm(!showProjectForm)
@@ -55,47 +53,38 @@ function Project(){
 
         project.cost = custoTotal
 
-        fetch('http://localhost:8080/services', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(service)
-        }).then(resp => resp.json())
+        Api.post("/services", service)
         .then(() => {
             setShowServiceForm(true)
-            setMessage('Serviço criado com sucesso')
-            setType('sucess')
-        }).catch(err => err)
+            setMessage("Serviço criado com sucesso")
+            setType("sucess")
+        }).catch(err => console.log(err))
         
 
     } 
 
 
-    function updateProject(project){
+     function updateProject(project){
         // Budget Validation
-        if(project.budget < project.costs){
+        if(project.budget < project.cost){
             setMessage('O orçamento não pode ser inferior ao custo')
             setType('error')
             return false;
         }
 
-        fetch(`http://localhost:8080/projects/${project.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(project)
-        }).then(resp => resp.json())
-        .then((data) => {
+         Api.put(`/projects/${id}`, project)
+        .then((response) =>{
             toogleProjectForm()
-            setProject(data)
-            setMessage('Projeto atualizado com sucesso')
-            setType('sucess')
+            setProject(response.data)
+            setMessage("Projeto atualizado com sucesso")
+            setType("sucess")
         }).catch(err => console.log(err))
+
+
     }
 
-    function removeService(service, cost){
+    
+    async function removeService(service, cost){
 
         project.cost = parseFloat(project.cost) - parseFloat(cost)
 
@@ -106,14 +95,22 @@ function Project(){
             },
             body: JSON.stringify(service)
         })
-        .then((data) => {
-            console.log(data)
-            console.log(project.cost)
+        .then(() => {
             project.service.pop()
+            update()
         })
         .catch(err => console.log(err))
 
-        updateProject(project)
+        const update = async () =>{
+        
+        await Api.put(`/projects/${id}`, project)
+        .then((response) => {
+            console.log(response.data)
+            setMessage("Serviço deletado com sucesso")
+            setType("error")
+        })
+        .catch(err => console.log(err))
+    }
 
     }
 
@@ -162,9 +159,6 @@ function Project(){
                     {services.length > 0 &&
                         services.map((service) => (
                             <ServiceCard
-                            name={service.name}
-                            cost={service.cost}
-                            description={service.description}
                             key={service.description}
                             service={service}
                             handleRemove={removeService}

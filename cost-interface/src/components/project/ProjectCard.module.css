@@ -35,23 +35,26 @@
     border-radius: 50%;
     background-color: #ccc;
     margin-right: 5px;
+    
 }
 
-.infra{
-    color: #ffaebc;
+
+.category_text span.infra{
+    background-color: #ffaebc;
 }
 
-.desenvolvimento{
-    color: #a0e7e5;
+.category_text span.desenvolvimento{
+    background-color: #a0e7e5;
 }
 
-.design{
-    color: #b4f8c8;
+.category_text span.design{
+    background-color: #b4f8c8;
 }
 
-.planejamento{
-    color: #fbe7c6;
+.category_text span.planejamento{
+    background-color: #fbe7c6;
 }
+
 
 .project_card_actions{
     margin-top: 1.2em;

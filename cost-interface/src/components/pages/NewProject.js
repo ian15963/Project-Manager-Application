@@ -2,21 +2,19 @@ import React from "react";
 import ProjectForm from "../project/ProjectForm";
 import styles from './NewProject.module.css'
 import {useNavigate} from 'react-router-dom'
+import Api from "../axios/config";
 
 function NewProject(){
 
     let navigate = useNavigate();
     
     function createProject(project){
-        fetch("http://localhost:8080/projects", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(project)
-        }).then((resp) => resp.json())
-            .then(() => navigate("/projects", {message: 'Projeto criado com sucesso'}))
-          .catch((err) => console.log(err))
+
+        Api.post("/projects", project)
+        .then(() => {
+            navigate("/projects", {state: {message: 'Projeto criado com sucesso'}})
+        })
+
 }
 
     return (

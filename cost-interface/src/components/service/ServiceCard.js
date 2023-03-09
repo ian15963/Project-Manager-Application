@@ -1,20 +1,20 @@
 import React from "react";
 import styles from "../project/ProjectCard.module.css"
 
-function ProjectCard({service, name, cost, description, handleRemove}){
+function ProjectCard({service, handleRemove}){
 
     const remove = (e) => {
         e.preventDefault()
-        handleRemove(service, cost)
+        handleRemove(service, service.cost)
     }
 
     return(
         <div className={styles.project_card}>
-            <h4>{name}</h4>
+            <h4>{service.name}</h4>
             <p>
-                <span>Custo Total:</span> R${cost}
+                <span>Custo Total:</span> R${service.cost}
             </p>
-            <p>{description}</p>
+            <p>{service.description}</p>
             <div className={styles.project_card_actions}>
                 <button onClick={remove}>Excluir</button>
 

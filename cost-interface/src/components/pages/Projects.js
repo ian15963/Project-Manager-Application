@@ -6,6 +6,7 @@ import Container from '../layout/Container'
 import LinkButton from '../layout/LinkButton'
 import Message from '../layout/Message'
 import Loading from '../layout/Loading';
+import  Api  from '../axios/config';
 
 
 function Projects(){
@@ -15,19 +16,11 @@ function Projects(){
     const[projectMessage, setProjectMessage] = useState('')
 
     useEffect(() => {
-
-        setTimeout(() =>{
-            fetch("http://localhost:8080/projects", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(resp => resp.json())
-            .then( (data) => {setProjects(data)
-            setRemoveLoading(true)})
-            .catch(err => console.log(err))
-        }, 3000)     
-    }, [])
+        Api.get("/projects").then((response) => {
+           setProjects(response.data);
+           setRemoveLoading(true)
+        }).catch(err => console.log(err));
+     }, []);
 
     const location = useLocation()
     let message = ''
@@ -39,17 +32,11 @@ function Projects(){
 
         setProjectMessage('')
 
-        fetch(`http://localhost:8080/projects/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        Api.delete(`/projects/${id}`)
         .then(() => {
             setProjects(projects.filter((project) => project.id !== id))
             setProjectMessage("Projeto deletado com sucesso.")
-        })
-        .catch((err) => console.log(err))
+        }).catch((err) => console.log(err))
     }
 
     return (
@@ -67,7 +54,7 @@ function Projects(){
                     key={project.id} category={project.category.name} handleRemove={deleteProject}/>
                 ))}
                 {!removeLoading && <Loading/>}
-                {removeLoading && projects.length ===0 &&(
+                {removeLoading && projects ===0 &&(
                     <p>Não há projetos cadastrados</p>
                 )}
         </Container>

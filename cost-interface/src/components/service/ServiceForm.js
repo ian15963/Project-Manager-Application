@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import Input from '../form/Input'
 import SubmitButton from '../form/SubmitButton'
 import styles from '../project/ProjectForm.module.css'
+import Api from '../axios/config'
 
 function ServiceForm({handleOnSubmit, btntext, projectData}){
     
@@ -9,22 +10,14 @@ function ServiceForm({handleOnSubmit, btntext, projectData}){
     
     function submit(e){
         e.preventDefault()
-        console.log(services)
         projectData.service.push(services)
         handleOnSubmit(services)
 
-       fetch(`http://localhost:8080/projects/${projectData.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(projectData)
-        }).then(resp => resp.json())
-        .then((data) => {
-            console.log(data)
+        Api.put(`/projects/${projectData.id}`, projectData)
+        .then((res)=>{
+            console.log(res.data)
             console.log(projectData)
-        })
-        .catch(err => console.log(err))
+        }).catch(err => console.log(err))
     }
 
     function handleOnChange(e){
